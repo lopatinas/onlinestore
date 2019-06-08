@@ -1,0 +1,26 @@
+product_index:
+    path: /
+    controller: App\Controller\ProductController::index
+
+cart_index:
+    path: /cart
+    controller: App\Controller\CartController::index
+
+cart_add_product:
+    path: /cart/products
+    methods: POST
+    controller: App\Controller\CartController::add
+
+order_create:
+    path: /orders
+    methods: POST
+    controller: App\Controller\OrderController::create
+
+order_view:
+    path: /orders/{id}
+    controller: App\Controller\OrderController::get
+
+order_pay:
+    path: /orders/{id}/pay
+    methods: POST
+    controller: App\Controller\OrderController::pay

@@ -1,0 +1,52 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Заказ <span class="badge {% if order.status is constant('STATUS_NEW', order) %}badge-primary{% else %}badge-success{% endif %}" id="status">{{ order.statusName }}</span></h1>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-sm-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">Цена: {{ product.price }}₽</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            {% if order.status is constant('STATUS_NEW', order) %}
+                <a href="/orders/{{ order.id }}/pay" class="btn btn-primary pay-order">Оплатить</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '.pay-order', function (e) {
+                e.preventDefault();
+                var button = $(this),
+                    status = $('#status');
+
+                $.post(button.attr('href'), function (data) {
+                    if (data.status) {
+                        button.remove();
+                        status.removeClass('badge-primary');
+                        status.addClass('badge-success');
+                        status.html(data.status);
+                    }
+                })
+                    .fail(function (data) {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert('Не удалось оплатить заказ')
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock custom_js %}

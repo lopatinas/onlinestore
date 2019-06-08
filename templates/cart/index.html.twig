@@ -1,0 +1,45 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Корзина</h1>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-sm-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">Цена: {{ product.price }}₽</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <a href="#" class="btn btn-primary create-order">Заказать</a>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '.create-order', function (e) {
+                e.preventDefault();
+
+                $.post("/orders", function (data) {
+                    if (data.orderId) {
+                        document.location.href = '/orders/' + data.orderId;
+                    }
+                })
+                    .fail(function (data) {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert('Не удалось создать заказ')
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock custom_js %}
